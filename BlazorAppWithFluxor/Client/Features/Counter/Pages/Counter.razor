@@ -1,0 +1,21 @@
+﻿@page "/counter"
+@inherits FluxorComponent
+@using BlazorAppWithFluxor.Client.Features.Counter.Store
+@inject IDispatcher Dispatcher
+@inject IState<CounterState> CounterState
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @CounterState.Value.CurrentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+
+    private void IncrementCount()
+    {
+        Dispatcher.Dispatch(new CounterIncrementAction());
+    }
+}

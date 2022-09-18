@@ -1,0 +1,75 @@
+﻿@inherits FluxorComponent
+@using BlazorAppWithFluxor.Client.Features.Counter.Store
+@using BlazorAppWithFluxor.Client.Features.Weather.Store
+@inject IState<WeatherState> WeatherState
+@inject IState<CounterState> CounterState
+@inject IToastService toastService
+@*
+    // This is actually not needed since inheriting from FluxorComponent
+    @inject IActionSubscriber ActionSubscriber
+*@
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BlazorAppWithFluxor</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="feedback">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Feedback
+            </NavLink>
+        </li>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter (@CounterState.Value.CurrentCount)
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> <span class="@WeatherItemClass">Weather</span>
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private string WeatherItemClass => WeatherState.Value.Loading ? "fw-bold" : null;
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override void OnInitialized()
+    {
+        //ActionSubscriber.SubscribeToAction<WeatherSetForecastsAction>(this, ShowWeatherToast);
+        SubscribeToAction<WeatherSetForecastsAction>(ShowWeatherToast);
+        base.OnInitialized();
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ShowWeatherToast(WeatherSetForecastsAction action)
+    {
+        toastService.ShowInfo("Weather Forecasts have been updated!");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        // This is actually not needed since inheriting from FluxorComponent
+        //ActionSubscriber.UnsubscribeFromAllActions(this);
+        base.Dispose(disposing);
+    }
+}

@@ -1,0 +1,52 @@
+﻿@page "/fetchdata"
+@inherits FluxorComponent
+
+@using BlazorAppWithFluxor.Client.Features.Weather.Store
+@using BlazorAppWithFluxor.Shared
+@using BlazorAppWithFluxor.Client.Features.Weather.Store
+
+@inject IDispatcher Dispatcher
+@inject IState<WeatherState> WeatherState
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (_loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <QuickGrid Items="forecasts" ResizableColumns>
+        <PropertyColumn Property="f => f.Date" Format="MMM d" Sortable="true"  />
+        <PropertyColumn Property="f => f.TemperatureC" Title="Temp. C" Sortable="true" />
+        <PropertyColumn Property="f => f.TemperatureF" Title="Temp. F" Sortable="true" />
+        <PropertyColumn Property="f => f.Summary" Sortable="true" />
+    </QuickGrid>
+    <button class="btn btn-outline-info" @onclick="LoadForecasts">Refresh Forecasts</button>
+}
+
+@code {
+    private IQueryable<WeatherForecast> forecasts => WeatherState?.Value?.Forecasts?.AsQueryable() 
+        ?? new List<WeatherForecast>().AsQueryable();
+    private bool _loading => WeatherState.Value.Loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (WeatherState.Value.Initialized == false)
+        {
+            await LoadForecasts();
+            Dispatcher.Dispatch(new WeatherSetInitializedAction());
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadForecasts()
+    {
+        Dispatcher.Dispatch(new WeatherLoadForecastsAction());
+    }
+
+}
