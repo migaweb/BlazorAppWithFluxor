@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorAppWithFluxor.Client.Features.Hubs
+@inherits LayoutComponentBase
+
+@inject IDispatcher Dispatcher
 
 <div class="page">
     <div class="sidebar">
@@ -19,3 +22,12 @@
 <BlazoredToasts Position="ToastPosition.BottomRight" Timeout="5" />
 
 <StateLoader />
+<Toaster />
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Dispatcher.Dispatch(new CounterHubStartAction());
+    }
+}

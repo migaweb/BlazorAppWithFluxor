@@ -1,0 +1,39 @@
+﻿@using BlazorAppWithFluxor.Client.Features.Hubs
+@inherits FluxorComponent
+
+@inject IToastService ToastService
+
+<h3>Toaster</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        SubscribeToAction<CounterHubReceiveCountAction>(ShowCountReceivedToast);
+        SubscribeToAction<CounterHubSendCountFailedAction>(ShowCountReceivedFailedToast);
+        SubscribeToAction<CounterHubSetConnectedAction>(ShowHubConnectedToast);
+
+        base.OnInitialized();
+    }
+
+    private void ShowCountReceivedToast(CounterHubReceiveCountAction action)
+    {
+        ToastService.ShowInfo($"Count received: {action.Count}");
+    }
+
+    private void ShowCountReceivedFailedToast(CounterHubSendCountFailedAction action)
+    {
+        ToastService.ShowError($"Count could not be broadcast: {action.Message}");
+    }
+
+    private void ShowHubConnectedToast(CounterHubSetConnectedAction action)
+    {
+        if (action.Connected)
+        {
+            ToastService.ShowSuccess($"CounterHub connected!");
+        }
+        else
+        {
+            ToastService.ShowError($"CounterHub disconnected!");
+        }
+    }
+}

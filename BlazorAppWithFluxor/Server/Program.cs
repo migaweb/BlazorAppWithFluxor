@@ -1,11 +1,20 @@
+using BlazorAppWithFluxor.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddSignalR();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddResponseCompression(opts =>
+{
+  opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+      new[] { "application/octet-stream" });
+});
 
 var app = builder.Build();
 
@@ -28,9 +37,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-
-app.MapRazorPages();
-app.MapControllers();
-app.MapFallbackToFile("index.html");
+app.UseEndpoints(endpoints =>
+{
+  endpoints.MapRazorPages();
+  endpoints.MapControllers();
+  endpoints.MapHub<CounterHub>("/counterhub");
+  endpoints.MapFallbackToFile("index.html");
+});
 
 app.Run();
