@@ -1,4 +1,5 @@
 using BlazorAppWithFluxor.Client;
+using Blazored.LocalStorage;
 using Blazored.Toast;
 using Fluxor;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,5 +14,10 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddFluxor(o => o.ScanAssemblies(typeof(Program).Assembly));
 
 builder.Services.AddBlazoredToast();
+
+builder.Services.AddBlazoredLocalStorage(config =>
+{
+  config.JsonSerializerOptions.WriteIndented = true;
+});
 
 await builder.Build().RunAsync();
