@@ -24,6 +24,7 @@ namespace BlazorAppWithFluxor.Client.Features.Counter.Store
 
   // Actions
   public class CounterIncrementAction { }
+
   public class CounterPersistStateAction
   {
     public CounterState CounterState { get; }
@@ -76,6 +77,15 @@ namespace BlazorAppWithFluxor.Client.Features.Counter.Store
     public string ErrorMessage { get; }
   }
 
+  public class CounterSetAction
+  {
+    public CounterState CounterState { get; }
+    public CounterSetAction(int count)
+    {
+      CounterState = new CounterState { CurrentCount = count };
+    }
+  }
+
   // Reducers
   public static class CounterReducers
   {
@@ -106,6 +116,13 @@ namespace BlazorAppWithFluxor.Client.Features.Counter.Store
     {
       _localStorageService = localStorageService;
       _toastService = toastService;
+    }
+
+    [EffectMethod]
+    public async Task SetCounter(CounterSetAction action, IDispatcher dispatcher)
+    {
+      var currentCount = action.CounterState.CurrentCount;
+      dispatcher.Dispatch(new CounterSetStateAction(action.CounterState with { CurrentCount = currentCount }));
     }
 
     [EffectMethod]
