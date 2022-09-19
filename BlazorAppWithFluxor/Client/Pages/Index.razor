@@ -7,3 +7,14 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<ErrorBoundary>
+    <ChildContent>
+        <ErrorComponent />
+    </ChildContent>
+    <ErrorContent>
+        <div class="border p-4 text-danger">
+            Sorry about that, something seems to have gone awry.
+        </div>
+    </ErrorContent>
+</ErrorBoundary>

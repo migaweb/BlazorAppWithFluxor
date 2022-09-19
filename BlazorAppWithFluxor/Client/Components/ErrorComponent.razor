@@ -1,0 +1,9 @@
+﻿<h3>ErrorComponent</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        throw new Exception("On purpose exception!");
+        base.OnInitialized();
+    }
+}
