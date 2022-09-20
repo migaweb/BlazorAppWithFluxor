@@ -10,7 +10,7 @@ namespace BlazorAppWithFluxor.Client.Features.Weather.Store
   {
     public bool Initialized { get; init; }
     public bool Loading { get; init; }
-    public WeatherForecast[] Forecasts { get; init; }
+    public WeatherForecast[]? Forecasts { get; init; }
   }
 
   // Feature
@@ -87,12 +87,12 @@ namespace BlazorAppWithFluxor.Client.Features.Weather.Store
   //Effects
   public class WeatherEffects
   {
-    private readonly HttpClient Http;
+    private readonly HttpClient _http;
     private readonly IState<CounterState> _counterState;
 
     public WeatherEffects(HttpClient http, IState<CounterState> counterState)
     {
-      Http = http;
+      _http = http;
       _counterState = counterState;
     }
 
@@ -104,6 +104,8 @@ namespace BlazorAppWithFluxor.Client.Features.Weather.Store
       {
         dispatcher.Dispatch(new WeatherLoadForecastsAction());
       }
+
+      await Task.CompletedTask;
     }
 
     [EffectMethod(typeof(WeatherLoadForecastsAction))]
@@ -111,7 +113,8 @@ namespace BlazorAppWithFluxor.Client.Features.Weather.Store
     {
       dispatcher.Dispatch(new WeatherSetLoadingAction(true));
       await Task.Delay(1000);
-      var forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+      var forecasts = await _http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast") 
+        ?? Array.Empty<WeatherForecast>();
       dispatcher.Dispatch(new WeatherSetForecastsAction(forecasts));
       dispatcher.Dispatch(new WeatherSetLoadingAction(false));
     }

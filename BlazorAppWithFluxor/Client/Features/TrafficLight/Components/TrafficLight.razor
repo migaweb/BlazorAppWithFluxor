@@ -1,0 +1,10 @@
+﻿@inherits FluxorComponent
+
+<div class="row lights-container" @onclick="@Toggle">
+    <div class="lights">
+        <div class="red @(State.Value.RedOn ? "on" : "off")"></div>
+        <div class="amber @(State.Value.AmberOn ? "on" : "off")"></div>
+        <div class="green @(State.Value.GreenOn ? "on" : "off")"></div>
+    </div>
+</div>
+

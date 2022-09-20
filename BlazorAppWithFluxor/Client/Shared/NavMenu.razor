@@ -25,6 +25,11 @@
             </NavLink>
         </div>
         <li class="nav-item px-3">
+            <NavLink class="nav-link" href="traffic-lights">
+                <span class="oi oi-plus"a aria-hidden="true"></span> Traffic lights
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
             <NavLink class="nav-link" href="feedback">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Feedback
             </NavLink>
@@ -43,7 +48,7 @@
 </div>
 
 @code {
-    private string WeatherItemClass => WeatherState.Value.Loading ? "fw-bold" : null;
+    private string WeatherItemClass => WeatherState.Value.Loading ? "fw-bold" : null!;
 
     private bool collapseNavMenu = true;
 
